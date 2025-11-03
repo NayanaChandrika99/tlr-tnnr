@@ -1,171 +1,219 @@
-<p align="center"><strong>Tiny Health Coding Extractor (THCE)</strong></p>
+<p align="center"><strong>Tiny Health Coding Extractor</strong></p>
 
-# THCE – Tiny Reasoning Model for Medical Coding
+# Tiny Reasoning Model for Medical Coding
 
-THCE is a turnkey repository for building a 135M parameter SmolLM2 model that converts free-form clinical narratives into ICD-10, CPT, and HCPCS billing codes while exposing its reasoning with `<think>` tags.  
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![Model](https://img.shields.io/badge/model-SmolLM2--135M-purple.svg)
+![Size](https://img.shields.io/badge/params-135M-orange.svg)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)
 
-
----
-
-## Highlights
-- **Domain-specific data assets** – curated code databases and stage-aligned JSONL datasets under `data/examples/`.
-- **Reusable pipelines** – preprocessing, synthetic generation scaffolding, and quality gates designed for medical coding.
-- **Training ready** – SFT/DPO entry points, configs, and tokenizer helpers tuned for SmolLM2-135M.
-- **Full documentation** – setup, development, data prep, training, evaluation, and roadmap guides in `docs/`.
-- **Confidence checks** – pytest suite and pre-commit hooks keep the repository shippable.
+**Turnkey repository for building a 135M parameter SmolLM2 model that converts free-form clinical narratives into ICD-10, CPT, and HCPCS billing codes with transparent `<think>` reasoning**
 
 ---
 
-## Quick Start
+## Why This Project?
 
-```bash
-# Install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
+Medical billing requires translating **free-text clinical notes** (doctor's narratives, procedure descriptions) into **standardized codes** (ICD-10 diagnoses, CPT procedures, HCPCS supplies). This is:
 
-# Bootstrap the environment
-uv sync --group dev
+- **Time-consuming**: Human coders spend 5-10 minutes per note
+- **Error-prone**: Incorrect codes lead to claim denials and revenue loss
+- **Opaque**: Even when automated, coders can't see the model's reasoning
+- **Expensive**: Large language models (70B+ params) are costly to run
 
-# Activate the virtual environment if needed
-source .venv/bin/activate  # Linux/macOS
-
-# Run automated checks
-uv run --group dev pytest
-uvx pre-commit run --all-files  # optional once hooks are installed
-```
-
-Create a `.env` from `.env.example` to store tokens for Hugging Face, W&B, or model providers when you are ready to push artefacts.
+**THCE solves this with**:
+- **Small, efficient model** (135M params) that runs on CPU or single GPU
+- **Transparent reasoning** via `<think>` tags showing step-by-step logic
+- **Multi-code support** for ICD-10 (diagnoses), CPT (procedures), HCPCS (supplies)
+- **Domain-specific data** with curated code databases and medical narratives
+- **Production-ready** with validation, quality gates, and evaluation pipelines
 
 ---
 
-## Working With The Toolkit
+## Visual Flow
 
-### Validate a Code
-```bash
-uv run python utils/code_validator.py --code E11.9 --type ICD10 --show-record
 ```
-
-### Check Dataset Quality
-```bash
-uv run python utils/data_quality.py \
-  --dataset data/examples/sample_stage_2.jsonl \
-  --stage stage_2 \
-  --json
-```
-
-### Convert Raw Records Into Stage Formats
-```bash
-uv run python data/preprocess_medical.py \
-  --input tests/fixtures/raw_records.jsonl \
-  --output /tmp/stage_2_output.jsonl \
-  --stage stage_2
-```
-
-### Produce Synthetic Scaffolding
-```bash
-uv run python data/synthetic_generation.py \
-  --stage stage_1 \
-  --count 20 \
-  --output /tmp/thce_stage_1_synth.jsonl
-```
-
-### Drive LLM-Based Synthetic Generation
-```bash
-# Replace default_request_fn in scripts/generate_synthetic.py with your provider client first.
-uv run python scripts/generate_synthetic.py \
-  --output data/synthetic/stage_1_llm.jsonl
-```
-
-### Dry-Run Training
-```bash
-uv run python post_training/sft.py \
-  --config-path post_training/config/stage_1.yaml \
-  --dry-run
-```
-
-### Run Baseline Evaluation
-```bash
-uv run python evaluation/evaluate_model.py \
-  --dataset data/processed/stage_2_val.jsonl \
-  --baseline majority_code \
-  --report-path reports/sample_stage_2.json
-```
-
-### Generate Predictions from a Trained Model
-```bash
-uv run python scripts/generate_predictions.py \
-  --model-path outputs/stage_3 \
-  --dataset '{"type": "local", "path": "data/processed/stage_2_val.jsonl"}' \
-  --output reports/stage_2_predictions.jsonl
-```
-
-### Inspect Evaluation Reports
-```bash
-uv run python evaluation/analysis.py \
-  --report-path reports/sample_stage_2.json \
-  --top-k 3
+┌────────────────────────────────────┐
+│  Clinical Narrative (Free-Text)   │
+│                                    │
+│  "Patient presented with acute     │
+│   chest pain radiating to left    │
+│   arm. ECG showed ST elevation.   │
+│   Performed cardiac catheterization│
+│   with stent placement."           │
+└────────────┬───────────────────────┘
+             │
+             ▼
+┌────────────────────────────────────┐
+│   Tokenization & Preprocessing    │
+│   (SmolLM2 tokenizer)              │
+└────────────┬───────────────────────┘
+             │
+             ▼
+┌────────────────────────────────────────────────┐
+│   SmolLM2-135M Model                           │
+│   ┌──────────────────────────────────────────┐ │
+│   │  Input: Clinical narrative               │ │
+│   │  Process: Generate reasoning trace       │ │
+│   │  Output: <think> + codes + confidence    │ │
+│   └──────────────────────────────────────────┘ │
+└────────────┬───────────────────────────────────┘
+             │
+             ▼
+┌────────────────────────────────────────────────┐
+│   Reasoning Output                             │
+│   <think>                                      │
+│   - Chief complaint: chest pain                │
+│   - Key finding: ST elevation on ECG           │
+│   - Diagnosis: acute myocardial infarction     │
+│   - Procedure: cardiac cath + stent            │
+│   </think>                                     │
+│                                                │
+│   ICD-10: I21.09 (ST elevation MI, anterior)  │
+│   CPT: 92928 (Coronary angioplasty + stent)   │
+│   HCPCS: C1876 (Drug-eluting coronary stent)  │
+│   Confidence: 0.92                             │
+└────────────┬───────────────────────────────────┘
+             │
+             ▼
+┌────────────────────────────────────┐
+│   Code Validation                  │
+│   • Check against code databases   │
+│   • Verify code formats            │
+│   • Flag deprecated/invalid codes  │
+└────────────┬───────────────────────┘
+             │
+             ▼
+┌────────────────────────────────────┐
+│   Output to Billing System         │
+│   ✓ Validated codes                │
+│   ✓ Reasoning trace (audit trail)  │
+│   ✓ Confidence scores              │
+└────────────────────────────────────┘
 ```
 
 ---
 
-## Data Assets
+## Tech Stack
 
-- `data/code_databases/*.json` – trimmed ICD-10, CPT, and HCPCS subsets used for validation.
-- `data/examples/sample_stage_*.jsonl` – stage-specific datasets with narratives, reasoning traces, and preference pairs.
-- `tests/fixtures/raw_records.jsonl` – compact fixture for preprocessing and integration testing.
-
-Schemas and expectations are documented in `docs/DATA_PREPARATION.md`.
+- **Base Model**: SmolLM2-135M (HuggingFace Transformers)
+- **Training Framework**: PyTorch with Hugging Face `transformers` and `trl`
+- **Training Methods**: Supervised Fine-Tuning (SFT) + Direct Preference Optimization (DPO)
+- **Package Manager**: `uv` (fast Python dependency resolver)
+- **Code Validation**: Custom validators for ICD-10, CPT, HCPCS
+- **Evaluation**: Exact match, partial match, code-level F1, reasoning quality
+- **Data Quality**: Automated quality checks with thresholds per training stage
+- **CI/CD**: GitHub Actions with pre-commit hooks (ruff, black, mypy)
+- **Experiment Tracking**: W&B (optional), local JSON reports
 
 ---
+
+## Features & ML Components
+
+### Core Capabilities
+✓ **Multi-Code Generation** — ICD-10 (diagnoses), CPT (procedures), HCPCS (supplies)  
+✓ **Transparent Reasoning** — `<think>` tags expose model logic for audit/trust  
+✓ **Small & Efficient** — 135M params run on CPU or single consumer GPU  
+✓ **Code Validation** — Real-time checks against curated code databases  
+✓ **Stage-Based Training** — Progressive curriculum from simple to complex narratives  
+✓ **Quality Gates** — Automated data quality checks per training stage  
+✓ **Evaluation Suite** — Exact match, code-level metrics, baseline comparisons  
+✓ **Production-Ready** — Pre-commit hooks, CI tests, model deployment scripts  
+
+### Training Stages
+- **Stage 1**: Simple narratives → single ICD-10 code (baseline)
+- **Stage 2**: Multi-code narratives → ICD-10 + CPT with reasoning
+- **Stage 3**: Complex cases → ICD-10 + CPT + HCPCS + DPO preference pairs
+
+### Data Assets
+- `data/code_databases/*.json` — ICD-10, CPT, HCPCS code definitions
+- `data/examples/sample_stage_*.jsonl` — Stage-specific training datasets
+- `tests/fixtures/raw_records.jsonl` — Test fixtures for validation
 
 ## Repository Layout
 
 ```
-.
-├── .github/workflows/uv-ci.yaml        # CI pipeline (lint + tests)
-├── data
-│   ├── code_databases
+tennr-trl/
+├── data/
+│   ├── code_databases/
+│   │   ├── icd10_codes.json
 │   │   ├── cpt_codes.json
-│   │   ├── hcpcs_codes.json
-│   │   └── icd10_codes.json
-│   ├── config
+│   │   └── hcpcs_codes.json
+│   ├── examples/
+│   │   ├── sample_stage_1.jsonl
+│   │   ├── sample_stage_2.jsonl
+│   │   └── sample_stage_3.jsonl
+│   ├── config/
 │   │   ├── stage_1.yaml
 │   │   ├── stage_2.yaml
 │   │   └── stage_3.yaml
 │   ├── data_collection.py
 │   ├── preprocess_medical.py
 │   └── synthetic_generation.py
-├── evaluation
-│   ├── analysis.py
-│   ├── baseline.py
-│   ├── evaluate_model.py
-│   └── metrics.py
-├── post_training
-│   ├── config
+├── post_training/
+│   ├── config/
 │   │   ├── stage_1.yaml
 │   │   ├── stage_2.yaml
 │   │   └── stage_3.yaml
-│   ├── dpo.py
-│   └── sft.py
-├── tests
-│   ├── fixtures/raw_records.jsonl
+│   ├── sft.py                  # Supervised Fine-Tuning
+│   └── dpo.py                  # Direct Preference Optimization
+├── evaluation/
+│   ├── evaluate_model.py       # Main evaluation entry point
+│   ├── baseline.py             # Baseline strategies
+│   ├── metrics.py              # Code-level metrics
+│   └── analysis.py             # Report analysis tools
+├── utils/
+│   ├── code_validator.py       # Validate ICD-10/CPT/HCPCS codes
+│   ├── data_quality.py         # Dataset quality checks
+│   ├── tokenization.py         # Tokenizer helpers
+│   └── medical_chat_templates.py # Prompt templates
+├── scripts/
+│   ├── generate_synthetic.py   # LLM-based data generation
+│   └── generate_predictions.py # Batch inference
+├── tests/
+│   ├── fixtures/
+│   │   └── raw_records.jsonl
 │   ├── test_code_validator.py
 │   ├── test_data_quality.py
-│   ├── test_metrics.py
-│   └── test_preprocessing.py
-├── utils
-│   ├── code_validator.py
-│   ├── data_quality.py
-│   ├── medical_chat_templates.py
-│   └── tokenization.py
-├── .pre-commit-config.yaml
-├── pyproject.toml
-└── uv.lock
+│   ├── test_preprocessing.py
+│   └── test_metrics.py
+├── docs/
+│   ├── DATA_PREPARATION.md     # Dataset schema and guidelines
+│   ├── TRAINING.md             # Training workflow
+│   └── EVALUATION.md           # Evaluation metrics
+├── pyproject.toml              # Project metadata and dependencies
+├── uv.lock                     # Locked dependency versions
+├── .pre-commit-config.yaml     # Code quality hooks
+└── README.md
 ```
 
+---
+
+## Documentation
+
+- **[docs/DATA_PREPARATION.md](docs/DATA_PREPARATION.md)** — Dataset schema, stage definitions, quality requirements
+- **[docs/TRAINING.md](docs/TRAINING.md)** — Training workflow, hyperparameter tuning
+- **[docs/EVALUATION.md](docs/EVALUATION.md)** — Metric definitions, baseline comparisons
 
 ---
 
 ## License & Credits
 
-This repository is provided for research and demonstration.  
-Inspired by the Tiny Reasoning Language Model work by Shekswess et al. and adapted for the medical coding domain.
+This repository is provided for research and demonstration purposes.  
+Inspired by the **Tiny Reasoning Language Model** work by Shekswess et al.  
+Adapted for medical coding domain with ICD-10/CPT/HCPCS datasets.
+
+**Key Technologies**:
+- **SmolLM2-135M** by HuggingFace (efficient small language model)
+- **TRL (Transformer Reinforcement Learning)** by HuggingFace (SFT/DPO training)
+- **uv** by Astral (fast Python package manager)
+- **Code Databases** derived from CMS (Centers for Medicare & Medicaid Services)
+
+**Citation**:
+```bibtex
+@misc{thce2024,
+  title={THCE: Tiny Health Coding Extractor},
+  author={Tennr Health Engineering},
+  year={2024},
+  note={Medical coding with transparent reasoning}
+}
+```

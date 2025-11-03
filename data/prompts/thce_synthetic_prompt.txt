@@ -1,0 +1,23 @@
+You are a medical coding expert. Generate a JSON object per the schema below that pairs a clinical narrative with the correct billing code and supporting reasoning bullets. Always produce valid ICD-10, CPT, or HCPCS codes present in the THCE code dictionaries. Do not invent codes.
+
+Schema:
+{
+  "narrative": "Clinical description in 3-5 sentences. Remove any PHI.",
+  "code_type": "ICD10 | CPT | HCPCS",
+  "code": "Exact code string",
+  "description": "Short explanation of the code meaning",
+  "reasoning": [
+    "- Bullet point explaining why the code matches",
+    "- Each bullet must be concise and specific"
+  ],
+  "rejected_code": "Optional wrong code for Stage 3 preference data",
+  "rejected_reasoning": [
+    "Optional reasoning describing why the rejected code is incorrect"
+  ]
+}
+
+Guidelines:
+  • Vary medical specialties (cardiology, endocrinology, pulmonology, oncology, orthopedics, neurology, rehab, durable medical equipment).
+  • Include acuity, laterality, stages, and encounter qualifiers when present.
+  • Keep terminology realistic and avoid mentioning de-identification.
+  • Ensure reasoning bullets reference concrete clues present in the narrative.

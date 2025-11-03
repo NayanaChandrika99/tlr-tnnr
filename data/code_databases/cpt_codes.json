@@ -1,0 +1,52 @@
+[
+    {
+        "code": "99213",
+        "short_description": "Office/outpatient visit, est patient, 20-29 minutes",
+        "category": "Evaluation and Management"
+    },
+    {
+        "code": "93000",
+        "short_description": "Electrocardiogram, complete",
+        "category": "Cardiovascular"
+    },
+    {
+        "code": "90686",
+        "short_description": "Influenza virus vaccine, quadrivalent, IM",
+        "category": "Immunization"
+    },
+    {
+        "code": "12001",
+        "short_description": "Simple repair of superficial wounds, 2.5 cm or less",
+        "category": "Surgery"
+    },
+    {
+        "code": "70450",
+        "short_description": "CT head/brain without contrast",
+        "category": "Radiology"
+    },
+    {
+        "code": "80053",
+        "short_description": "Comprehensive metabolic panel",
+        "category": "Pathology and Laboratory"
+    },
+    {
+        "code": "87086",
+        "short_description": "Culture, bacterial; quantitative colony count, urine",
+        "category": "Pathology and Laboratory"
+    },
+    {
+        "code": "36415",
+        "short_description": "Collection of venous blood by venipuncture",
+        "category": "Medicine"
+    },
+    {
+        "code": "97110",
+        "short_description": "Therapeutic exercise to develop strength/endurance/flexibility",
+        "category": "Physical Medicine"
+    },
+    {
+        "code": "20550",
+        "short_description": "Injection; tendon sheath, ligament, ganglion cyst",
+        "category": "Surgery"
+    }
+]

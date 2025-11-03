@@ -1,0 +1,52 @@
+[
+    {
+        "code": "E0130",
+        "short_description": "Walker, rigid (adjustable or fixed) height",
+        "category": "Durable Medical Equipment"
+    },
+    {
+        "code": "A0429",
+        "short_description": "Ambulance service, basic life support, emergency transport",
+        "category": "Transportation Services"
+    },
+    {
+        "code": "A4253",
+        "short_description": "Blood glucose test strips, per 50 strips",
+        "category": "Diabetic Supplies"
+    },
+    {
+        "code": "J1100",
+        "short_description": "Injection, dexamethasone sodium phosphate, 1 mg",
+        "category": "Drugs and Biologicals"
+    },
+    {
+        "code": "J1885",
+        "short_description": "Injection, ketorolac tromethamine, per 15 mg",
+        "category": "Drugs and Biologicals"
+    },
+    {
+        "code": "A5500",
+        "short_description": "Diabetic shoes, extra depth, per pair",
+        "category": "Durable Medical Equipment"
+    },
+    {
+        "code": "L4360",
+        "short_description": "Walking boot, pneumatic and/or vacuum, with or without joints",
+        "category": "Orthotics"
+    },
+    {
+        "code": "B4154",
+        "short_description": "Enteral nutrition solution, renal, nutrient 1.8 cal",
+        "category": "Nutritional"
+    },
+    {
+        "code": "A7030",
+        "short_description": "CPAP full face mask, each",
+        "category": "Durable Medical Equipment"
+    },
+    {
+        "code": "Q5106",
+        "short_description": "Injection, epoetin alfa-epbx, biosimilar",
+        "category": "Drugs and Biologicals"
+    }
+]

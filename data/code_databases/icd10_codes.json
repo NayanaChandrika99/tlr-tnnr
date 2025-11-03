@@ -1,0 +1,62 @@
+[
+    {
+        "code": "E11.9",
+        "short_description": "Type 2 diabetes mellitus without complications",
+        "long_description": "Type 2 diabetes mellitus without complications",
+        "chapter": "Endocrine, nutritional and metabolic diseases"
+    },
+    {
+        "code": "I10",
+        "short_description": "Essential (primary) hypertension",
+        "long_description": "Essential (primary) hypertension",
+        "chapter": "Diseases of the circulatory system"
+    },
+    {
+        "code": "J20.9",
+        "short_description": "Acute bronchitis, unspecified",
+        "long_description": "Acute bronchitis, unspecified",
+        "chapter": "Diseases of the respiratory system"
+    },
+    {
+        "code": "J45.909",
+        "short_description": "Unspecified asthma, uncomplicated",
+        "long_description": "Unspecified asthma, uncomplicated",
+        "chapter": "Diseases of the respiratory system"
+    },
+    {
+        "code": "M54.5",
+        "short_description": "Low back pain",
+        "long_description": "Low back pain",
+        "chapter": "Diseases of the musculoskeletal system and connective tissue"
+    },
+    {
+        "code": "N39.0",
+        "short_description": "Urinary tract infection, site not specified",
+        "long_description": "Urinary tract infection, site not specified",
+        "chapter": "Diseases of the genitourinary system"
+    },
+    {
+        "code": "K21.9",
+        "short_description": "Gastro-esophageal reflux disease without esophagitis",
+        "long_description": "Gastro-esophageal reflux disease without esophagitis",
+        "chapter": "Diseases of the digestive system"
+    },
+    {
+        "code": "Z00.00",
+        "short_description": "Encounter for general adult medical examination without abnormal findings",
+        "long_description": "Encounter for general adult medical examination without abnormal findings",
+        "chapter": "Factors influencing health status and contact with health services"
+    },
+    {
+        "code": "S82.001A",
+        "short_description": "Fracture of unspecified part of right patella, initial encounter for closed fracture",
+        "long_description": "Fracture of unspecified part of right patella, initial encounter for closed fracture",
+        "chapter": "Injury, poisoning and certain other consequences of external causes"
+    },
+    {
+        "code": "E66.9",
+        "short_description": "Obesity, unspecified",
+        "long_description": "Obesity, unspecified",
+        "chapter": "Endocrine, nutritional and metabolic diseases"
+    }
+]

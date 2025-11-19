@@ -1,0 +1,26 @@
+model: outputs/foundation_sft/final
+dataset: data/processed/foundation_train.jsonl
+
+training:
+  batch_size: 4
+  mini_batch_size: 4
+  grad_accum: 8
+  epochs: 2
+  lr: 1.0e-5
+  
+  # RLVR/PPO parameters
+  reward_baseline_method: running_mean
+  kl_coef: 0.1
+  
+  # Optimization
+  warmup_ratio: 0.1
+  lr_scheduler_type: cosine
+  max_grad_norm: 1.0
+  
+  # Checkpointing
+  save_steps: 100
+  save_total_limit: 3
+
+output_dir: outputs/rlvr
+run_name: thce-rlvr
+

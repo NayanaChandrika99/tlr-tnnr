@@ -1,0 +1,25 @@
+model: outputs/rlvr/final  # Start from Phase 2 model
+dataset: data/processed/thought_scores_5k.jsonl # You need to generate this first
+
+trainer:
+  per_device_train_batch_size: 4
+  gradient_accumulation_steps: 8
+  num_train_epochs: 2
+  learning_rate: 5.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.1
+  
+  save_strategy: "steps"
+  save_steps: 100
+  
+  logging_steps: 10
+  
+  output_dir: "outputs/quality_refined"
+  run_name: "thce-phase-3-quality"
+  
+  bf16: true
+  gradient_checkpointing: true
+  max_seq_length: 2048
+  
+  report_to: "wandb"
+

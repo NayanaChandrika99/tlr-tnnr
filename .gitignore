@@ -46,5 +46,3 @@ uv.lock
 docs/
 .agent
 .cursor/
-
-.claude/    

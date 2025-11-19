@@ -99,8 +99,3 @@ tennr-trl/
 
 This repository is provided for research and demonstration purposes.
 
-**Key Technologies:**
-- SmolLM2-135M by HuggingFace
-- TRL (Transformer Reinforcement Learning) by HuggingFace
-- uv by Astral
-- Code Databases derived from CMS

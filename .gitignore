@@ -43,3 +43,8 @@ plan.md
 
 # Optional: dependency lock (remove if you want it tracked)
 uv.lock
+docs/
+.agent
+.cursor/
+
+.claude/    

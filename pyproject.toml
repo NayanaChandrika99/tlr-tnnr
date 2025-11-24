@@ -11,7 +11,7 @@ dependencies = [
   "huggingface-hub[cli]==0.34.4",
   "immutabledict>=4.2.1",
   "langdetect>=1.0.9",
-  "lighteval==0.11.0",
+  "lighteval==0.13.0",
   "loguru==0.7.3",
   "peft==0.17.1",
   "python-dotenv==1.1.1",
